@@ -46,6 +46,8 @@ class TodoController extends Controller
     }
 
     public function store(Request $request){
+        dd(auth()->user());
+
         $request->validate([
           'title' => 'required|max:255',
         ]);

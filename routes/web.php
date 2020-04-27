@@ -13,31 +13,26 @@ use Illuminate\Http\Request;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/todos', 'TodoController@index')->name('todo.index');
+Route::middleware('auth')->group(function(){
 
 Route::get('/todos/create', 'TodoController@create');
-
 Route::post('/todos/create', 'TodoController@store');
-
 Route::patch('/todos/{todo}/update', 'TodoController@update')->name('todo.update');
-
+Route::get('/todos/{todo}/edit', 'TodoController@edit');
+Route::get('/todos', 'TodoController@index')->name('todo.index');
 Route::put('/todos/{todo}/complete', 'TodoController@complete')->name('todo.complete');
-
 Route::delete('/todos/{todo}/delete', 'TodoController@delete')->name('todo.delete');
-
 Route::delete('/todos/{todo}/incomplete', 'TodoController@incomplete')->name('todo.incomplete');
 
-
-Route::get('/todos/{todo}/edit', 'TodoController@edit');
+});
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/user', 'UserController@index');
-
-Route::post('/upload', 'UserController@uploadAvatar');
+Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::post('/upload', 'UserController@uploadAvatar');
+Route::get('/user', 'UserController@index');
