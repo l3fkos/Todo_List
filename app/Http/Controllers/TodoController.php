@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Todo;
+use Illuminate\Support\Facades\Validator;
 
 
 class TodoController extends Controller
@@ -15,7 +16,8 @@ class TodoController extends Controller
   }
 
     public function index(){
-      $todos = Todo::orderBy('completed')->get();
+      $todos = auth()->user()->todos()->orderBy('completed')->get();
+
       return view('todos.index')->with(['todos' => $todos]);
     }
 
@@ -46,12 +48,19 @@ class TodoController extends Controller
     }
 
     public function store(Request $request){
-        dd(auth()->user());
 
-        $request->validate([
-          'title' => 'required|max:255',
-        ]);
+        $userId = auth()->user()->id;
+        $request['user_id'] = $userId;
+
+        $rules = ['title' => 'required|max:255'];
+
+        $messages = [ 'title.max' => 'Todo title should not be greater than 255 chars'];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if($validator->fails()){
+          return redirect()->back()->withErrors($validator)->withInput();
+        }
         Todo::create($request->all());
-        return redirect()->back()->with('message', 'Item created successfully');
+        return redirect(route('todo.index'))->with('message', 'Item created successfully');
     }
 }

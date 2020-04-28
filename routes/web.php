@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::resource('/todos', 'TodoController');
+
 Route::middleware('auth')->group(function(){
 
 Route::get('/todos/create', 'TodoController@create');
